@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>小聊天</title>
+<style>
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  html,body{margin:0;height:100%}
+  body{
+    display:flex;flex-direction:column;height:100dvh;
+    font:16px/1.6 system-ui,-apple-system,"PingFang SC",sans-serif;
+    background:#f6f5f3;color:#222;
+  }
+  header{
+    flex:0 0 auto;padding:12px 16px;padding-top:calc(12px + env(safe-area-inset-top));
+    background:#fff;border-bottom:1px solid #e6e4e0;font-weight:600;
+  }
+  #msgs{
+    flex:1;overflow-y:auto;padding:16px;
+    display:flex;flex-direction:column;gap:10px;
+  }
+  .bubble{
+    max-width:82%;padding:10px 14px;border-radius:16px;
+    white-space:pre-wrap;word-break:break-word;
+  }
+  .me{align-self:flex-end;background:#2f6feb;color:#fff;border-bottom-right-radius:4px}
+  .ai{align-self:flex-start;background:#fff;border:1px solid #e6e4e0;border-bottom-left-radius:4px}
+  #bar{
+    flex:0 0 auto;display:flex;gap:8px;padding:10px 12px;
+    padding-bottom:calc(10px + env(safe-area-inset-bottom));
+    background:#fff;border-top:1px solid #e6e4e0;
+  }
+  #input{
+    flex:1;resize:none;border:1px solid #ddd;border-radius:12px;
+    padding:10px 12px;font:inherit;max-height:120px;
+  }
+  #send{
+    flex:0 0 auto;border:0;border-radius:12px;padding:0 18px;
+    background:#2f6feb;color:#fff;font:inherit;font-weight:600;
+  }
+</style>
+</head>
+<body>
+  <header>小聊天</header>
+  <div id="msgs">
+    <div class="bubble ai">在这儿。说点啥？</div>
+  </div>
+  <div id="bar">
+    <textarea id="input" rows="1" placeholder="说点什么…"></textarea>
+    <button id="send">发</button>
+  </div>
+
+<script>
+  const msgs = document.getElementById('msgs');
+  const input = document.getElementById('input');
+  const send = document.getElementById('send');
+
+  function add(text, who){
+    const d = document.createElement('div');
+    d.className = 'bubble ' + who;
+    d.textContent = text;
+    msgs.appendChild(d);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function onSend(){
+    const t = input.value.trim();
+    if(!t) return;
+    add(t, 'me');
+    input.value = '';
+    // 第二步：这里接 API
+    add('（我还没接上脑子，先只会把你说的复述一遍）' + t, 'ai');
+  }
+
+  send.addEventListener('click', onSend);
+  input.addEventListener('keydown', e => {
+    if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); onSend(); }
+  });
+</script>
+</body>
+</html>
